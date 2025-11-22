@@ -1,0 +1,2143 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SleepSync - Scientific Sleep Stimulation</title>
+    <style>
+        :root {
+            --primary: #4A6572;
+            --secondary: #344955;
+            --accent: #F9AA33;
+            --dark: #232F34;
+            --light: #B0BEC5;
+            --success: #4CAF50;
+            --night-blue: #0A2463;
+            --deep-purple: #3E2F5B;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--night-blue) 0%, var(--deep-purple) 100%);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .android-container {
+            max-width: 400px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: var(--dark);
+            position: relative;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .status-bar {
+            background: var(--secondary);
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--light);
+        }
+        
+        .header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            padding: 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .main-content {
+            padding: 20px;
+            padding-bottom: 70px;
+        }
+        
+        /* Sleep Stage Styles */
+        .sleep-stage {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .stage-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--accent);
+        }
+        
+        .stage-progress {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, var(--accent), #FF9800);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+        
+        .brain-waves {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        
+        .wave {
+            text-align: center;
+        }
+        
+        .wave-name {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-bottom: 5px;
+        }
+        
+        .wave-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        
+        /* Visual Stimulation Section */
+        .visual-stimulation {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .stimulation-title {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--accent);
+        }
+        
+        .stimulation-controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .stimulation-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 12px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .stimulation-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .stimulation-btn.active {
+            background: rgba(249, 170, 51, 0.2);
+            border-color: var(--accent);
+        }
+        
+        .visual-canvas-container {
+            height: 200px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin: 15px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #visualCanvas {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .visual-intensity {
+            margin-top: 15px;
+        }
+        
+        /* Audio Controls */
+        .audio-controls {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .control-title {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .slider-container {
+            position: relative;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+        }
+        
+        .binaural-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--accent);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--accent);
+            color: var(--dark);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+        
+        .sleep-timer {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .timer-display {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0;
+            color: var(--accent);
+        }
+        
+        .sleep-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+            margin: 5px 0;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .breathing-guide {
+            text-align: center;
+            margin: 10px 0;
+            font-size: 1.1rem;
+        }
+        
+        .breath-text {
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 1.3rem;
+            margin: 15px 0;
+            min-height: 32px;
+        }
+        
+        .science-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+        
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 400px;
+            background: var(--secondary);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            padding: 10px 0;
+            z-index: 1000;
+        }
+        
+        .nav-item {
+            text-align: center;
+            color: var(--light);
+            font-size: 0.8rem;
+            padding: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item.active {
+            color: var(--accent);
+        }
+        
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-icon {
+            font-size: 1.2rem;
+            margin-bottom: 3px;
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        /* Breathing Circle Animation */
+        .breathing-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 20px auto;
+            border: 3px solid var(--accent);
+            position: relative;
+        }
+        
+        .breathing-circle.breathing-in {
+            animation: breatheIn 4s ease-in-out infinite;
+            border-color: #4CAF50;
+        }
+        
+        .breathing-circle.breathing-out {
+            animation: breatheOut 6s ease-in-out infinite;
+            border-color: var(--accent);
+        }
+        
+        @keyframes breatheIn {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.7;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0.8);
+                opacity: 0.7;
+            }
+        }
+        
+        @keyframes breatheOut {
+            0% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(0.8);
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
+        
+        /* Research Info */
+        .research-info {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 0.75rem;
+            line-height: 1.3;
+            border-left: 3px solid var(--accent);
+        }
+
+        /* Stats Page Styles */
+        .stat-chart {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .chart-title {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            text-align: center;
+            color: var(--accent);
+        }
+        
+        .chart-container {
+            height: 200px;
+            position: relative;
+            margin: 20px 0;
+        }
+        
+        #sleepChart, #heartRateChart {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .sleep-history {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .history-day {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        .day-name {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-bottom: 5px;
+        }
+        
+        .day-score {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        /* Sounds Page Styles */
+        .sound-library {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .sound-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .sound-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .sound-card.active {
+            background: rgba(249, 170, 51, 0.2);
+            border: 1px solid var(--accent);
+        }
+        
+        .sound-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .sound-name {
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        /* Settings Page Styles */
+        .settings-group {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+        
+        .setting-label {
+            font-size: 0.9rem;
+        }
+
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: var(--dark);
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            z-index: 1001;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { top: 50px; opacity: 0; }
+            to { top: 100px; opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { top: 100px; opacity: 1; }
+            to { top: 50px; opacity: 0; }
+        }
+
+        .volume-control {
+            margin-top: 10px;
+        }
+
+        /* Heart Rate Monitoring Styles */
+        .hr-status {
+            display: flex;
+            justify-content: space-around;
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .hr-metric {
+            text-align: center;
+        }
+
+        .hr-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #FF6B6B;
+        }
+
+        .hr-label {
+            font-size: 0.7rem;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="android-container">
+        <!-- Android Status Bar -->
+        <div class="status-bar">
+            <div id="currentTime">9:41</div>
+            <div>SleepSync</div>
+            <div>100%</div>
+        </div>
+        
+        <!-- App Header -->
+        <div class="header">
+            <h1 id="pageHeader">SleepSync</h1>
+            <div class="subtitle" id="pageSubtitle">Scientific Sleep Stimulation</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sleep Page -->
+            <div class="page active" id="sleepPage">
+                <!-- Sleep Stage Display -->
+                <div class="sleep-stage">
+                    <div class="stage-title" id="sleepStage">Awake</div>
+                    <div class="stage-progress">
+                        <div class="progress-bar" id="stageProgress" style="width: 10%"></div>
+                    </div>
+                    
+                    <!-- Heart Rate Monitoring -->
+                    <div class="hr-status">
+                        <div class="hr-metric">
+                            <div class="hr-value" id="currentHR">--</div>
+                            <div class="hr-label">HEART RATE</div>
+                        </div>
+                        <div class="hr-metric">
+                            <div class="hr-value" id="hrvValue">--</div>
+                            <div class="hr-label">HRV</div>
+                        </div>
+                        <div class="hr-metric">
+                            <div class="hr-value" id="restingHR">--</div>
+                            <div class="hr-label">RESTING HR</div>
+                        </div>
+                    </div>
+                    
+                    <div class="breathing-guide">
+                        <div class="breathing-circle" id="breathingCircle"></div>
+                        <div class="breath-text" id="breathText">Ready to begin</div>
+                    </div>
+                    <div class="brain-waves">
+                        <div class="wave">
+                            <div class="wave-name">Delta</div>
+                            <div class="wave-value" id="deltaValue">12%</div>
+                        </div>
+                        <div class="wave">
+                            <div class="wave-name">Theta</div>
+                            <div class="wave-value" id="thetaValue">24%</div>
+                        </div>
+                        <div class="wave">
+                            <div class="wave-name">Alpha</div>
+                            <div class="wave-value" id="alphaValue">35%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Scientific Visual Stimulation -->
+                <div class="visual-stimulation">
+                    <div class="stimulation-title">Visual Sleep Induction</div>
+                    
+                    <div class="stimulation-controls">
+                        <button class="stimulation-btn active" data-type="breathing">Breathing Guide</button>
+                        <button class="stimulation-btn" data-type="pulse">Light Pulse</button>
+                        <button class="stimulation-btn" data-type="gradient">Color Gradient</button>
+                        <button class="stimulation-btn" data-type="particles">Floating Particles</button>
+                        <button class="stimulation-btn" data-type="waves">Brain Waves</button>
+                        <button class="stimulation-btn" data-type="labyrinth">Sleep Labyrinth</button>
+                    </div>
+                    
+                    <div class="visual-canvas-container">
+                        <canvas id="visualCanvas"></canvas>
+                    </div>
+                    
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Stimulation Intensity</span>
+                            <span id="visualIntensity">50%</span>
+                        </div>
+                        <div class="slider-container">
+                            <input type="range" id="visualIntensityRange" min="10" max="100" value="50">
+                        </div>
+                    </div>
+                    
+                    <div class="research-info">
+                        <strong>Research:</strong> Slow visual patterns (0.5-2 Hz) synchronize with brain waves to promote sleep onset. Blue-light reduced displays help maintain melatonin production.
+                    </div>
+                </div>
+                
+                <!-- Audio Stimulation -->
+                <div class="audio-controls">
+                    <div class="control-title">Audio Sleep Stimulation</div>
+                    
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Binaural Beats</span>
+                            <span id="binauralFreq">2.5 Hz</span>
+                        </div>
+                        <div class="slider-container">
+                            <input type="range" id="binauralRange" min="0.5" max="8" step="0.1" value="2.5">
+                        </div>
+                        <div class="binaural-control">
+                            <span>Enable</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="binauralToggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Pink Noise</span>
+                            <span id="noiseVolume">30%</span>
+                        </div>
+                        <div class="slider-container">
+                            <input type="range" id="noiseRange" min="0" max="100" value="30">
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Breathing Guide</span>
+                            <span id="breathingRate">6 BPM</span>
+                        </div>
+                        <div class="slider-container">
+                            <input type="range" id="breathingRange" min="4" max="10" step="0.5" value="6">
+                        </div>
+                    </div>
+                    
+                    <div class="research-info">
+                        <strong>Science:</strong> Binaural beats at delta frequencies (0.5-4 Hz) encourage deep sleep. Pink noise masks environmental sounds and improves sleep stability.
+                    </div>
+                </div>
+                
+                <!-- Sleep Timer -->
+                <div class="sleep-timer">
+                    <div>Sleep Session</div>
+                    <div class="timer-display" id="sleepTimer">00:00:00</div>
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" id="resetBtn">
+                            <i>↺</i> Reset
+                        </button>
+                        <button class="btn btn-primary" id="startBtn">
+                            <i>▶</i> Start Sleep
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Sleep Statistics -->
+                <div class="sleep-stats">
+                    <div class="stat-card">
+                        <div class="stat-label">Sleep Efficiency</div>
+                        <div class="stat-value" id="efficiencyValue">--%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Deep Sleep</div>
+                        <div class="stat-value" id="deepSleepValue">--min</div>
+                    </div>
+                </div>
+                
+                <!-- Scientific Information -->
+                <div class="science-info">
+                    <strong>Evidence-Based Sleep Technology:</strong> Combining visual, auditory, and breathing stimulation based on peer-reviewed sleep research to optimize sleep onset and quality.
+                </div>
+            </div>
+
+            <!-- Stats Page -->
+            <div class="page" id="statsPage">
+                <div class="stat-chart">
+                    <div class="chart-title">Sleep Quality Trends</div>
+                    <div class="chart-container">
+                        <canvas id="sleepChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="stat-chart">
+                    <div class="chart-title">Heart Rate During Sleep</div>
+                    <div class="chart-container">
+                        <canvas id="heartRateChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="sleep-stats">
+                    <div class="stat-card">
+                        <div class="stat-label">Average Sleep</div>
+                        <div class="stat-value" id="avgSleepValue">6h 24m</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Best Night</div>
+                        <div class="stat-value" id="bestSleepValue">8h 12m</div>
+                    </div>
+                </div>
+                
+                <div class="stat-chart">
+                    <div class="chart-title">Weekly Sleep History</div>
+                    <div class="sleep-history">
+                        <div class="history-day">
+                            <div class="day-name">Mon</div>
+                            <div class="day-score">82%</div>
+                        </div>
+                        <div class="history-day">
+                            <div class="day-name">Tue</div>
+                            <div class="day-score">76%</div>
+                        </div>
+                        <div class="history-day">
+                            <div class="day-name">Wed</div>
+                            <div class="day-score">88%</div>
+                        </div>
+                        <div class="history-day">
+                            <div class="day-name">Thu</div>
+                            <div class="day-score">91%</div>
+                        </div>
+                        <div class="history-day">
+                            <div class="day-name">Fri</div>
+                            <div class="day-score">79%</div>
+                        </div>
+                        <div class="history-day">
+                            <div class="day-name">Sat</div>
+                            <div class="day-score">85%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="hrInsights" class="science-info">
+                    <strong>Heart Rate Analysis:</strong><br>
+                    • Deep Sleep: -- minutes<br>
+                    • REM Sleep: -- minutes<br>
+                    • Recovery Score: --%<br>
+                    • Sleep Efficiency: --%
+                </div>
+            </div>
+
+            <!-- Sounds Page -->
+            <div class="page" id="soundsPage">
+                <div class="audio-controls">
+                    <div class="control-title">Ambient Sound Library</div>
+                    
+                    <div class="sound-library">
+                        <div class="sound-card" data-sound="rain">
+                            <div class="sound-icon">🌧️</div>
+                            <div class="sound-name">Rain</div>
+                        </div>
+                        <div class="sound-card" data-sound="ocean">
+                            <div class="sound-icon">🌊</div>
+                            <div class="sound-name">Ocean</div>
+                        </div>
+                        <div class="sound-card" data-sound="forest">
+                            <div class="sound-icon">🌲</div>
+                            <div class="sound-name">Forest</div>
+                        </div>
+                        <div class="sound-card" data-sound="fireplace">
+                            <div class="sound-icon">🔥</div>
+                            <div class="sound-name">Fireplace</div>
+                        </div>
+                        <div class="sound-card" data-sound="white-noise">
+                            <div class="sound-icon">📻</div>
+                            <div class="sound-name">White Noise</div>
+                        </div>
+                        <div class="sound-card" data-sound="fan">
+                            <div class="sound-icon">💨</div>
+                            <div class="sound-name">Fan</div>
+                        </div>
+                    </div>
+
+                    <div class="control-group volume-control">
+                        <div class="control-label">
+                            <span>Ambient Sound Volume</span>
+                            <span id="ambientVolume">50%</span>
+                        </div>
+                        <div class="slider-container">
+                            <input type="range" id="ambientVolumeRange" min="0" max="100" value="50">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="research-info">
+                    <strong>Sound Therapy:</strong> Ambient sounds at 40-60 dB effectively mask disruptive noises and create consistent auditory environment for better sleep continuity.
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div class="page" id="settingsPage">
+                <div class="settings-group">
+                    <div class="setting-item">
+                        <span class="setting-label">Heart Rate Monitoring</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="hrToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <span class="setting-label">HRV Analysis</span>
+                        <span class="setting-value" id="hrvSettingValue">-- ms</span>
+                    </div>
+                    <div class="setting-item">
+                        <span class="setting-label">Resting Heart Rate</span>
+                        <span class="setting-value" id="restingHRSetting">-- BPM</span>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <div class="setting-item">
+                        <span class="setting-label">Smart Wake Up</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="smartWakeToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <span class="setting-label">Sleep Reminders</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="remindersToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="settings-group">
+                    <div class="setting-item">
+                        <span class="setting-label">Sleep Goal</span>
+                        <span class="setting-value">8 hours</span>
+                    </div>
+                    <div class="setting-item">
+                        <span class="setting-label">Bedtime</span>
+                        <span class="setting-value">10:30 PM</span>
+                    </div>
+                    <div class="setting-item">
+                        <span class="setting-label">Wake Time</span>
+                        <span class="setting-value">6:30 AM</span>
+                    </div>
+                </div>
+                
+                <div class="settings-group">
+                    <div class="setting-item">
+                        <span class="setting-label">Export Sleep Data</span>
+                        <button class="btn btn-secondary" style="padding: 8px 12px;" id="exportBtn">Export</button>
+                    </div>
+                    <div class="setting-item">
+                        <span class="setting-label">Reset All Data</span>
+                        <button class="btn btn-secondary" style="padding: 8px 12px;" id="resetDataBtn">Reset</button>
+                    </div>
+                </div>
+
+                <div class="science-info">
+                    <strong>Personalization:</strong> Adjust settings to match your sleep preferences and lifestyle. Consistent bedtime routines improve sleep quality by 35%.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Navigation -->
+        <div class="nav-bar">
+            <div class="nav-item active" data-page="sleepPage">
+                <div class="nav-icon">💤</div>
+                <div>Sleep</div>
+            </div>
+            <div class="nav-item" data-page="statsPage">
+                <div class="nav-icon">📊</div>
+                <div>Stats</div>
+            </div>
+            <div class="nav-item" data-page="soundsPage">
+                <div class="nav-icon">🎵</div>
+                <div>Sounds</div>
+            </div>
+            <div class="nav-item" data-page="settingsPage">
+                <div class="nav-icon">⚙️</div>
+                <div>Settings</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Heart Rate Monitor Class
+        class HeartRateMonitor {
+            constructor() {
+                this.isMonitoring = false;
+                this.currentHR = 72;
+                this.restingHR = 65;
+                this.hrv = 35;
+                this.sleepHRData = [];
+                this.hrUpdateInterval = null;
+                
+                this.stageHRRanges = {
+                    'awake': { min: 65, max: 85 },
+                    'n1': { min: 60, max: 75 },
+                    'n2': { min: 55, max: 65 },
+                    'n3': { min: 50, max: 60 },
+                    'rem': { min: 60, max: 70 }
+                };
+            }
+
+            startMonitoring() {
+                if (this.isMonitoring) return;
+                
+                this.isMonitoring = true;
+                this.sleepHRData = [];
+                
+                this.hrUpdateInterval = setInterval(() => {
+                    this.updateHeartRate();
+                    this.updateHRDisplay();
+                }, 5000);
+            }
+
+            stopMonitoring() {
+                this.isMonitoring = false;
+                if (this.hrUpdateInterval) {
+                    clearInterval(this.hrUpdateInterval);
+                }
+            }
+
+            updateHeartRate() {
+                const currentStage = sleepSyncApp.currentStage;
+                const range = this.stageHRRanges[currentStage];
+                
+                const variability = (Math.random() - 0.5) * 10;
+                let newHR = (range.min + range.max) / 2 + variability;
+                
+                this.currentHR = Math.round(this.currentHR * 0.7 + newHR * 0.3);
+                this.hrv = this.calculateHRV(currentStage);
+                
+                this.sleepHRData.push({
+                    timestamp: Date.now(),
+                    hr: this.currentHR,
+                    hrv: this.hrv,
+                    stage: currentStage
+                });
+                
+                if (this.sleepHRData.length > 2880) {
+                    this.sleepHRData.shift();
+                }
+                
+                this.updateRestingHR();
+            }
+
+            calculateHRV(sleepStage) {
+                const stageHRVBase = {
+                    'awake': 25,
+                    'n1': 30,
+                    'n2': 35,
+                    'n3': 20,
+                    'rem': 45
+                };
+                
+                const baseHRV = stageHRVBase[sleepStage];
+                const variability = (Math.random() - 0.5) * 15;
+                
+                return Math.max(10, Math.round(baseHRV + variability));
+            }
+
+            updateRestingHR() {
+                if (this.sleepHRData.length > 60) {
+                    const overnightLow = Math.min(...this.sleepHRData.slice(-60).map(d => d.hr));
+                    this.restingHR = Math.round(this.restingHR * 0.95 + overnightLow * 0.05);
+                }
+            }
+
+            updateHRDisplay() {
+                document.getElementById('currentHR').textContent = this.currentHR;
+                document.getElementById('hrvValue').textContent = this.hrv + ' ms';
+                document.getElementById('restingHR').textContent = this.restingHR;
+                
+                // Update settings page
+                document.getElementById('hrvSettingValue').textContent = this.hrv + ' ms';
+                document.getElementById('restingHRSetting').textContent = this.restingHR + ' BPM';
+            }
+
+            getSleepQualityFromHR() {
+                if (this.sleepHRData.length === 0) return null;
+                
+                const analysis = {
+                    deepSleepMinutes: 0,
+                    remSleepMinutes: 0,
+                    sleepEfficiency: 0,
+                    recoveryScore: 0
+                };
+                
+                const fourHoursAgo = Date.now() - (4 * 60 * 60 * 1000);
+                const recentData = this.sleepHRData.filter(d => d.timestamp > fourHoursAgo);
+                
+                if (recentData.length === 0) return analysis;
+                
+                recentData.forEach(point => {
+                    if (point.hr < 58 && point.hrv < 25) analysis.deepSleepMinutes++;
+                    if (point.hrv > 40 && point.hr > 62) analysis.remSleepMinutes++;
+                });
+                
+                analysis.deepSleepMinutes = Math.round(analysis.deepSleepMinutes / 12);
+                analysis.remSleepMinutes = Math.round(analysis.remSleepMinutes / 12);
+                analysis.recoveryScore = Math.min(100, Math.round((this.hrv / 50) * 100));
+                analysis.sleepEfficiency = Math.min(100, Math.round(((analysis.deepSleepMinutes + analysis.remSleepMinutes) / 240) * 100));
+                
+                return analysis;
+            }
+
+            drawHeartRateChart() {
+                const ctx = document.getElementById('heartRateChart').getContext('2d');
+                const width = ctx.canvas.width;
+                const height = ctx.canvas.height;
+                
+                ctx.clearRect(0, 0, width, height);
+                
+                if (this.sleepHRData.length < 2) return;
+                
+                const padding = 40;
+                const chartWidth = width - padding * 2;
+                const chartHeight = height - padding * 2;
+                
+                const hrs = this.sleepHRData.map(d => d.hr);
+                const minHR = Math.min(...hrs);
+                const maxHR = Math.max(...hrs);
+                const hrRange = maxHR - minHR || 1;
+                
+                // Draw HR line
+                ctx.strokeStyle = '#FF6B6B';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                
+                this.sleepHRData.forEach((point, index) => {
+                    const x = padding + (index / (this.sleepHRData.length - 1)) * chartWidth;
+                    const y = padding + chartHeight - ((point.hr - minHR) / hrRange) * chartHeight;
+                    
+                    if (index === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                });
+                
+                ctx.stroke();
+            }
+        }
+
+        // Complete SleepSync Application
+        class SleepSyncApp {
+            constructor() {
+                this.isRunning = false;
+                this.startTime = null;
+                this.currentStage = 'awake';
+                this.stageStartTime = null;
+                this.audioContext = null;
+                this.binauralOscillators = [];
+                this.pinkNoise = null;
+                this.ambientSounds = {};
+                this.currentAmbientSound = null;
+                this.binauralEnabled = false;
+                this.pinkNoiseEnabled = false;
+                this.ambientSoundEnabled = false;
+                this.breathingEnabled = true;
+                this.breathPhase = 'ready';
+                this.breathStartTime = null;
+                this.breathInterval = null;
+                
+                this.sleepStages = ['awake', 'n1', 'n2', 'n3', 'rem'];
+                this.stageDurations = {
+                    'awake': 5 * 60, 'n1': 10 * 60, 'n2': 20 * 60, 
+                    'n3': 30 * 60, 'rem': 10 * 60
+                };
+                
+                this.brainWaveTargets = {
+                    'awake': { delta: 0.1, theta: 0.2, alpha: 0.4, beta: 0.3 },
+                    'n1': { delta: 0.2, theta: 0.4, alpha: 0.3, beta: 0.1 },
+                    'n2': { delta: 0.3, theta: 0.5, alpha: 0.1, beta: 0.1 },
+                    'n3': { delta: 0.6, theta: 0.3, alpha: 0.05, beta: 0.05 },
+                    'rem': { delta: 0.1, theta: 0.4, alpha: 0.2, beta: 0.3 }
+                };
+                
+                this.currentBrainWaves = { delta: 0.12, theta: 0.24, alpha: 0.35, beta: 0.29 };
+                this.heartRateMonitor = new HeartRateMonitor();
+                
+                this.init();
+            }
+            
+            init() {
+                this.setupAudioContext();
+                this.setupEventListeners();
+                this.setupNavigation();
+                this.setupVisualStimulation();
+                this.setupSoundLibrary();
+                this.setupSettings();
+                this.updateRealTime();
+                this.updateDisplay();
+            }
+            
+            setupAudioContext() {
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) {
+                    console.log('Web Audio API not supported');
+                }
+            }
+            
+            setupEventListeners() {
+                document.getElementById('startBtn').addEventListener('click', () => {
+                    this.toggleSleepSession();
+                });
+                
+                document.getElementById('resetBtn').addEventListener('click', () => {
+                    this.resetSession();
+                });
+                
+                document.getElementById('binauralToggle').addEventListener('change', (e) => {
+                    this.toggleBinauralBeats(e.target.checked);
+                });
+                
+                document.getElementById('binauralRange').addEventListener('input', (e) => {
+                    this.updateBinauralFrequency(parseFloat(e.target.value));
+                });
+                
+                document.getElementById('noiseRange').addEventListener('input', (e) => {
+                    this.updateNoiseVolume(parseInt(e.target.value));
+                    if (parseInt(e.target.value) > 0 && !this.pinkNoiseEnabled) {
+                        this.startPinkNoise();
+                    } else if (parseInt(e.target.value) === 0 && this.pinkNoiseEnabled) {
+                        this.stopPinkNoise();
+                    }
+                });
+                
+                document.getElementById('breathingRange').addEventListener('input', (e) => {
+                    this.updateBreathingRate(parseFloat(e.target.value));
+                });
+                
+                // Real-time slider updates
+                document.getElementById('noiseRange').addEventListener('input', function() {
+                    document.getElementById('noiseVolume').textContent = this.value + '%';
+                });
+                
+                document.getElementById('binauralRange').addEventListener('input', function() {
+                    document.getElementById('binauralFreq').textContent = this.value + ' Hz';
+                });
+                
+                document.getElementById('visualIntensityRange').addEventListener('input', function() {
+                    document.getElementById('visualIntensity').textContent = this.value + '%';
+                });
+                
+                document.getElementById('ambientVolumeRange').addEventListener('input', function() {
+                    document.getElementById('ambientVolume').textContent = this.value + '%';
+                });
+            }
+            
+            setupNavigation() {
+                const navItems = document.querySelectorAll('.nav-item');
+                
+                navItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        const targetPage = item.dataset.page;
+                        this.switchPage(targetPage);
+                        
+                        navItems.forEach(nav => nav.classList.remove('active'));
+                        item.classList.add('active');
+                    });
+                });
+            }
+            
+            setupSoundLibrary() {
+                const soundCards = document.querySelectorAll('.sound-card');
+                
+                soundCards.forEach(card => {
+                    card.addEventListener('click', () => {
+                        const soundType = card.dataset.sound;
+                        
+                        soundCards.forEach(c => c.classList.remove('active'));
+                        card.classList.add('active');
+                        
+                        if (this.currentAmbientSound) {
+                            this.stopAmbientSound(this.currentAmbientSound);
+                        }
+                        
+                        this.playAmbientSound(soundType);
+                        this.showNotification(`Now playing: ${card.querySelector('.sound-name').textContent}`);
+                    });
+                });
+                
+                document.getElementById('ambientVolumeRange').addEventListener('input', (e) => {
+                    const volume = parseInt(e.target.value) / 100;
+                    this.updateAmbientVolume(volume);
+                });
+            }
+            
+            setupSettings() {
+                const toggles = document.querySelectorAll('#settingsPage .toggle-switch input');
+                toggles.forEach(toggle => {
+                    toggle.addEventListener('change', (e) => {
+                        const settingName = e.target.id.replace('Toggle', '');
+                        const enabled = e.target.checked;
+                        
+                        if (settingName === 'smartWake') {
+                            this.showNotification(enabled ? 
+                                'Smart Wake Up enabled' : 'Smart Wake Up disabled');
+                        } else if (settingName === 'reminders') {
+                            this.showNotification(enabled ? 
+                                'Sleep reminders enabled' : 'Sleep reminders disabled');
+                        } else if (settingName === 'hr') {
+                            if (enabled && this.isRunning) {
+                                this.heartRateMonitor.startMonitoring();
+                            } else {
+                                this.heartRateMonitor.stopMonitoring();
+                            }
+                        }
+                    });
+                });
+                
+                document.getElementById('exportBtn').addEventListener('click', () => {
+                    this.exportSleepData();
+                });
+                
+                document.getElementById('resetDataBtn').addEventListener('click', () => {
+                    this.resetAllData();
+                });
+            }
+            
+            setupVisualStimulation() {
+                this.visualStimulation = new VisualStimulation();
+            }
+            
+            switchPage(pageId) {
+                document.querySelectorAll('.page').forEach(page => {
+                    page.classList.remove('active');
+                });
+                document.getElementById(pageId).classList.add('active');
+                this.updateHeader(pageId);
+                
+                if (pageId === 'statsPage') {
+                    this.updateSleepChart();
+                    this.heartRateMonitor.drawHeartRateChart();
+                    this.updateHRAnalysisDisplay();
+                }
+            }
+            
+            updateHeader(pageId) {
+                const header = document.getElementById('pageHeader');
+                const subtitle = document.getElementById('pageSubtitle');
+                
+                const headers = {
+                    'sleepPage': ['SleepSync', 'Scientific Sleep Stimulation'],
+                    'statsPage': ['Sleep Analytics', 'Track Your Sleep Patterns'],
+                    'soundsPage': ['Sound Library', 'Ambient Sounds for Sleep'],
+                    'settingsPage': ['Settings', 'Customize Your Experience']
+                };
+                
+                [header.textContent, subtitle.textContent] = headers[pageId] || headers['sleepPage'];
+            }
+            
+            // Fixed Breathing Function
+            startBreathingGuide() {
+                this.breathingEnabled = true;
+                this.breathStartTime = Date.now();
+                this.breathPhase = 'in';
+                this.updateBreathing();
+            }
+            
+            stopBreathingGuide() {
+                this.breathingEnabled = false;
+                this.breathPhase = 'ready';
+                const circle = document.getElementById('breathingCircle');
+                circle.className = 'breathing-circle';
+                document.getElementById('breathText').textContent = 'Ready to begin';
+                document.getElementById('breathText').style.color = '#F9AA33';
+                
+                if (this.breathInterval) {
+                    clearInterval(this.breathInterval);
+                    this.breathInterval = null;
+                }
+            }
+            
+            updateBreathing() {
+                if (!this.isRunning || !this.breathingEnabled) {
+                    this.stopBreathingGuide();
+                    return;
+                }
+                
+                const breathingRate = parseFloat(document.getElementById('breathingRange').value);
+                const totalBreathTime = (60 / breathingRate) * 1000; // Total cycle in milliseconds
+                const inhaleTime = totalBreathTime * 0.4; // 40% inhale
+                const exhaleTime = totalBreathTime * 0.6; // 60% exhale
+                
+                const currentTime = Date.now();
+                const cycleTime = (currentTime - this.breathStartTime) % totalBreathTime;
+                
+                const circle = document.getElementById('breathingCircle');
+                const breathText = document.getElementById('breathText');
+                
+                if (cycleTime < inhaleTime) {
+                    // Inhale phase
+                    if (this.breathPhase !== 'in') {
+                        this.breathPhase = 'in';
+                        circle.className = 'breathing-circle breathing-in';
+                        breathText.textContent = 'Breathe In';
+                        breathText.style.color = '#4CAF50';
+                    }
+                } else {
+                    // Exhale phase
+                    if (this.breathPhase !== 'out') {
+                        this.breathPhase = 'out';
+                        circle.className = 'breathing-circle breathing-out';
+                        breathText.textContent = 'Breathe Out';
+                        breathText.style.color = '#F9AA33';
+                    }
+                }
+                
+                // Continue the cycle
+                this.breathInterval = setTimeout(() => this.updateBreathing(), 100);
+            }
+            
+            updateBreathingRate(rate) {
+                document.getElementById('breathingRate').textContent = `${rate} BPM`;
+                // Restart breathing with new rate
+                if (this.isRunning && this.breathingEnabled) {
+                    this.startBreathingGuide();
+                }
+            }
+            
+            // Audio Methods
+            playAmbientSound(soundType) {
+                if (!this.audioContext) return;
+                
+                if (this.ambientSounds[soundType]) {
+                    this.stopAmbientSound(soundType);
+                }
+                
+                try {
+                    const oscillator = this.audioContext.createOscillator();
+                    const gainNode = this.audioContext.createGain();
+                    
+                    switch(soundType) {
+                        case 'rain':
+                            oscillator.type = 'sawtooth';
+                            oscillator.frequency.value = 200;
+                            break;
+                        case 'ocean':
+                            oscillator.type = 'sine';
+                            oscillator.frequency.value = 80;
+                            break;
+                        case 'forest':
+                            oscillator.type = 'triangle';
+                            oscillator.frequency.value = 300;
+                            break;
+                        case 'fireplace':
+                            oscillator.type = 'sawtooth';
+                            oscillator.frequency.value = 60;
+                            break;
+                        case 'white-noise':
+                            const bufferSize = this.audioContext.sampleRate * 2;
+                            const buffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
+                            const data = buffer.getChannelData(0);
+                            
+                            for (let i = 0; i < bufferSize; i++) {
+                                data[i] = Math.random() * 2 - 1;
+                            }
+                            
+                            const noiseSource = this.audioContext.createBufferSource();
+                            noiseSource.buffer = buffer;
+                            noiseSource.loop = true;
+                            noiseSource.connect(gainNode);
+                            noiseSource.start();
+                            
+                            this.ambientSounds[soundType] = { source: noiseSource, gain: gainNode };
+                            break;
+                        case 'fan':
+                            oscillator.type = 'sawtooth';
+                            oscillator.frequency.value = 120;
+                            break;
+                    }
+                    
+                    if (soundType !== 'white-noise') {
+                        oscillator.connect(gainNode);
+                        oscillator.start();
+                        this.ambientSounds[soundType] = { source: oscillator, gain: gainNode };
+                    }
+                    
+                    gainNode.connect(this.audioContext.destination);
+                    gainNode.gain.value = document.getElementById('ambientVolumeRange').value / 100 * 0.3;
+                    
+                    this.currentAmbientSound = soundType;
+                    this.ambientSoundEnabled = true;
+                    
+                } catch (error) {
+                    console.error('Error playing ambient sound:', error);
+                }
+            }
+            
+            stopAmbientSound(soundType) {
+                if (this.ambientSounds[soundType]) {
+                    try {
+                        this.ambientSounds[soundType].source.stop();
+                        delete this.ambientSounds[soundType];
+                        
+                        if (this.currentAmbientSound === soundType) {
+                            this.currentAmbientSound = null;
+                            this.ambientSoundEnabled = false;
+                        }
+                    } catch (error) {
+                        console.error('Error stopping ambient sound:', error);
+                    }
+                }
+            }
+            
+            updateAmbientVolume(volume) {
+                if (this.currentAmbientSound && this.ambientSounds[this.currentAmbientSound]) {
+                    this.ambientSounds[this.currentAmbientSound].gain.gain.value = volume * 0.3;
+                }
+            }
+            
+            // Sleep session methods
+            toggleSleepSession() {
+                if (this.isRunning) {
+                    this.stopSession();
+                    document.getElementById('startBtn').innerHTML = '<i>▶</i> Start Sleep';
+                } else {
+                    this.startSession();
+                    document.getElementById('startBtn').innerHTML = '<i>⏸</i> Pause';
+                }
+            }
+            
+            startSession() {
+                this.isRunning = true;
+                this.startTime = Date.now();
+                this.stageStartTime = Date.now();
+                this.currentStage = 'awake';
+                
+                // Start all enabled features
+                if (document.getElementById('binauralToggle').checked) {
+                    this.startBinauralBeats();
+                }
+                
+                if (document.getElementById('noiseRange').value > 0) {
+                    this.startPinkNoise();
+                }
+                
+                if (document.getElementById('hrToggle').checked) {
+                    this.heartRateMonitor.startMonitoring();
+                }
+                
+                this.startBreathingGuide();
+                this.updateTimer();
+                this.updateSleepStage();
+                this.showNotification('Sleep session started');
+            }
+            
+            stopSession() {
+                this.isRunning = false;
+                this.stopBinauralBeats();
+                this.stopPinkNoise();
+                this.stopBreathingGuide();
+                this.heartRateMonitor.stopMonitoring();
+                this.showNotification('Sleep session paused');
+            }
+            
+            resetSession() {
+                this.stopSession();
+                this.currentStage = 'awake';
+                this.currentBrainWaves = { delta: 0.12, theta: 0.24, alpha: 0.35, beta: 0.29 };
+                this.updateDisplay();
+                document.getElementById('sleepTimer').textContent = '00:00:00';
+                document.getElementById('startBtn').innerHTML = '<i>▶</i> Start Sleep';
+                document.getElementById('efficiencyValue').textContent = '--%';
+                document.getElementById('deepSleepValue').textContent = '--min';
+                this.showNotification('Session reset');
+            }
+            
+            // Binaural beats methods
+            startBinauralBeats() {
+                if (!this.audioContext || this.binauralOscillators.length > 0) return;
+                
+                const baseFreq = 200;
+                const binauralFreq = parseFloat(document.getElementById('binauralRange').value);
+                
+                const leftOsc = this.audioContext.createOscillator();
+                const rightOsc = this.audioContext.createOscillator();
+                
+                leftOsc.type = 'sine';
+                rightOsc.type = 'sine';
+                leftOsc.frequency.value = baseFreq;
+                rightOsc.frequency.value = baseFreq + binauralFreq;
+                
+                const leftGain = this.audioContext.createGain();
+                const rightGain = this.audioContext.createGain();
+                leftGain.gain.value = 0.1;
+                rightGain.gain.value = 0.1;
+                
+                const leftPanner = this.audioContext.createStereoPanner();
+                const rightPanner = this.audioContext.createStereoPanner();
+                leftPanner.pan.value = -1;
+                rightPanner.pan.value = 1;
+                
+                leftOsc.connect(leftGain);
+                rightOsc.connect(rightGain);
+                leftGain.connect(leftPanner);
+                rightGain.connect(rightPanner);
+                leftPanner.connect(this.audioContext.destination);
+                rightPanner.connect(this.audioContext.destination);
+                
+                leftOsc.start();
+                rightOsc.start();
+                
+                this.binauralOscillators = [leftOsc, rightOsc, leftGain, rightGain];
+                this.binauralEnabled = true;
+            }
+            
+            stopBinauralBeats() {
+                this.binauralOscillators.forEach(node => {
+                    try {
+                        if (node.stop) node.stop();
+                    } catch (e) {}
+                });
+                this.binauralOscillators = [];
+                this.binauralEnabled = false;
+            }
+            
+            toggleBinauralBeats(enabled) {
+                if (enabled && this.isRunning) {
+                    this.startBinauralBeats();
+                } else {
+                    this.stopBinauralBeats();
+                }
+            }
+            
+            updateBinauralFrequency(freq) {
+                document.getElementById('binauralFreq').textContent = `${freq} Hz`;
+                
+                if (this.binauralEnabled && this.binauralOscillators.length >= 2) {
+                    const baseFreq = 200;
+                    this.binauralOscillators[0].frequency.value = baseFreq;
+                    this.binauralOscillators[1].frequency.value = baseFreq + freq;
+                }
+            }
+            
+            // Pink noise methods
+            startPinkNoise() {
+                if (!this.audioContext || this.pinkNoise) return;
+                
+                const bufferSize = 5 * this.audioContext.sampleRate;
+                const buffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
+                const data = buffer.getChannelData(0);
+                
+                let white = [];
+                for (let i = 0; i < 7; i++) white[i] = Math.random() * 2 - 1;
+                
+                let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+                
+                for (let i = 0; i < bufferSize; i++) {
+                    white[0] = Math.random() * 2 - 1;
+                    b0 = 0.99886 * b0 + white[0] * 0.0555179;
+                    b1 = 0.99332 * b1 + white[0] * 0.0750759;
+                    b2 = 0.96900 * b2 + white[0] * 0.1538520;
+                    b3 = 0.86650 * b3 + white[0] * 0.3104856;
+                    b4 = 0.55000 * b4 + white[0] * 0.5329522;
+                    b5 = -0.7616 * b5 - white[0] * 0.0168980;
+                    data[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white[0] * 0.5362;
+                    data[i] *= 0.11;
+                    b6 = white[0] * 0.115926;
+                }
+                
+                this.pinkNoise = this.audioContext.createBufferSource();
+                const gainNode = this.audioContext.createGain();
+                
+                this.pinkNoise.buffer = buffer;
+                this.pinkNoise.loop = true;
+                gainNode.gain.value = document.getElementById('noiseRange').value / 100 * 0.1;
+                
+                this.pinkNoise.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+                this.pinkNoise.start();
+                
+                this.pinkNoiseEnabled = true;
+            }
+            
+            stopPinkNoise() {
+                if (this.pinkNoise) {
+                    this.pinkNoise.stop();
+                    this.pinkNoise = null;
+                }
+                this.pinkNoiseEnabled = false;
+            }
+            
+            updateNoiseVolume(volume) {
+                document.getElementById('noiseVolume').textContent = `${volume}%`;
+            }
+            
+            // Sleep stage methods
+            updateSleepStage() {
+                if (!this.isRunning) return;
+                
+                const stageTime = (Date.now() - this.stageStartTime) / 1000;
+                const stageDuration = this.stageDurations[this.currentStage];
+                
+                const progress = (stageTime / stageDuration) * 100;
+                document.getElementById('stageProgress').style.width = `${Math.min(100, progress)}%`;
+                
+                const deepSleep = this.calculateDeepSleepTime();
+                document.getElementById('deepSleepValue').textContent = `${deepSleep}m`;
+                
+                if (stageTime >= stageDuration) {
+                    this.transitionToNextStage();
+                }
+                
+                this.adjustBrainWaves();
+                setTimeout(() => this.updateSleepStage(), 1000);
+            }
+            
+            transitionToNextStage() {
+                const currentIndex = this.sleepStages.indexOf(this.currentStage);
+                const nextIndex = (currentIndex + 1) % this.sleepStages.length;
+                this.currentStage = this.sleepStages[nextIndex];
+                this.stageStartTime = Date.now();
+                
+                document.getElementById('sleepStage').textContent = this.getStageDisplayName(this.currentStage);
+                this.adjustBinauralForStage();
+            }
+            
+            adjustBinauralForStage() {
+                const stageFrequencies = {
+                    'awake': 2.5, 'n1': 4.0, 'n2': 2.0, 'n3': 0.5, 'rem': 6.0
+                };
+                
+                const targetFreq = stageFrequencies[this.currentStage];
+                document.getElementById('binauralRange').value = targetFreq;
+                this.updateBinauralFrequency(targetFreq);
+            }
+            
+            adjustBrainWaves() {
+                const target = this.brainWaveTargets[this.currentStage];
+                
+                for (let wave in this.currentBrainWaves) {
+                    const current = this.currentBrainWaves[wave];
+                    const targetVal = target[wave];
+                    const diff = targetVal - current;
+                    this.currentBrainWaves[wave] = current + (diff * 0.02);
+                }
+                
+                this.updateBrainWaveDisplay();
+            }
+            
+            // Timer and display methods
+            updateTimer() {
+                if (!this.isRunning) return;
+                
+                const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
+                const hours = Math.floor(elapsed / 3600);
+                const minutes = Math.floor((elapsed % 3600) / 60);
+                const seconds = elapsed % 60;
+                
+                document.getElementById('sleepTimer').textContent = 
+                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                const efficiency = Math.min(95, 70 + (this.calculateDeepSleepTime() / elapsed) * 100);
+                document.getElementById('efficiencyValue').textContent = `${Math.round(efficiency)}%`;
+                
+                setTimeout(() => this.updateTimer(), 1000);
+            }
+            
+            calculateDeepSleepTime() {
+                const elapsed = (Date.now() - this.startTime) / 1000;
+                return Math.floor(elapsed * 0.3);
+            }
+            
+            updateBrainWaveDisplay() {
+                document.getElementById('deltaValue').textContent = 
+                    `${Math.round(this.currentBrainWaves.delta * 100)}%`;
+                document.getElementById('thetaValue').textContent = 
+                    `${Math.round(this.currentBrainWaves.theta * 100)}%`;
+                document.getElementById('alphaValue').textContent = 
+                    `${Math.round(this.currentBrainWaves.alpha * 100)}%`;
+            }
+            
+            getStageDisplayName(stage) {
+                const names = {
+                    'awake': 'Awake', 'n1': 'Light Sleep', 'n2': 'Deep Sleep',
+                    'n3': 'Very Deep Sleep', 'rem': 'REM Sleep'
+                };
+                return names[stage];
+            }
+            
+            // Chart methods
+            updateSleepChart() {
+                const ctx = document.getElementById('sleepChart').getContext('2d');
+                const width = ctx.canvas.width;
+                const height = ctx.canvas.height;
+                
+                ctx.clearRect(0, 0, width, height);
+                
+                const data = [65, 72, 78, 82, 88, 85, 90];
+                const padding = 40;
+                const chartWidth = width - padding * 2;
+                const chartHeight = height - padding * 2;
+                
+                // Draw grid
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+                ctx.lineWidth = 1;
+                
+                for (let i = 0; i <= 100; i += 20) {
+                    const y = padding + chartHeight - (i / 100) * chartHeight;
+                    ctx.beginPath();
+                    ctx.moveTo(padding, y);
+                    ctx.lineTo(width - padding, y);
+                    ctx.stroke();
+                    
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                    ctx.font = '10px Arial';
+                    ctx.fillText(i + '%', 5, y + 3);
+                }
+                
+                // Draw data line
+                ctx.strokeStyle = '#F9AA33';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                
+                data.forEach((value, index) => {
+                    const x = padding + (index / (data.length - 1)) * chartWidth;
+                    const y = padding + chartHeight - (value / 100) * chartHeight;
+                    
+                    if (index === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                    
+                    ctx.fillStyle = '#F9AA33';
+                    ctx.beginPath();
+                    ctx.arc(x, y, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                
+                ctx.stroke();
+                
+                const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.font = '10px Arial';
+                ctx.textAlign = 'center';
+                
+                data.forEach((_, index) => {
+                    const x = padding + (index / (data.length - 1)) * chartWidth;
+                    const y = height - 10;
+                    ctx.fillText(days[index], x, y);
+                });
+            }
+            
+            updateHRAnalysisDisplay() {
+                const analysis = this.heartRateMonitor.getSleepQualityFromHR();
+                if (analysis) {
+                    const insightsHtml = `
+                        <strong>Heart Rate Analysis:</strong><br>
+                        • Deep Sleep: ${analysis.deepSleepMinutes} minutes<br>
+                        • REM Sleep: ${analysis.remSleepMinutes} minutes<br>
+                        • Recovery Score: ${Math.round(analysis.recoveryScore)}%<br>
+                        • Sleep Efficiency: ${Math.round(analysis.sleepEfficiency)}%
+                    `;
+                    document.getElementById('hrInsights').innerHTML = insightsHtml;
+                }
+            }
+            
+            // Settings methods
+            exportSleepData() {
+                this.showNotification('Sleep data exported successfully');
+            }
+            
+            resetAllData() {
+                if (confirm('Are you sure you want to reset all sleep data? This cannot be undone.')) {
+                    this.showNotification('All sleep data has been reset');
+                }
+            }
+            
+            // Utility methods
+            updateRealTime() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                document.getElementById('currentTime').textContent = timeString;
+                setTimeout(() => this.updateRealTime(), 1000);
+            }
+            
+            updateDisplay() {
+                this.updateBrainWaveDisplay();
+                document.getElementById('sleepStage').textContent = this.getStageDisplayName(this.currentStage);
+            }
+            
+            showNotification(message) {
+                const notification = document.createElement('div');
+                notification.className = 'notification';
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideUp 0.3s ease';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
+        }
+
+        // Visual Stimulation System
+        class VisualStimulation {
+            constructor() {
+                this.canvas = document.getElementById('visualCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.currentType = 'breathing';
+                this.intensity = 0.5;
+                this.isRunning = false;
+                this.animationId = null;
+                this.time = 0;
+                
+                this.init();
+            }
+            
+            init() {
+                this.resizeCanvas();
+                window.addEventListener('resize', () => this.resizeCanvas());
+                this.setupControls();
+                this.startAnimation();
+            }
+            
+            resizeCanvas() {
+                this.canvas.width = this.canvas.offsetWidth;
+                this.canvas.height = this.canvas.offsetHeight;
+            }
+            
+            setupControls() {
+                const buttons = document.querySelectorAll('.stimulation-btn');
+                buttons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        buttons.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        this.currentType = btn.dataset.type;
+                    });
+                });
+                
+                document.getElementById('visualIntensityRange').addEventListener('input', (e) => {
+                    this.intensity = parseInt(e.target.value) / 100;
+                    document.getElementById('visualIntensity').textContent = e.target.value + '%';
+                });
+            }
+            
+            startAnimation() {
+                this.isRunning = true;
+                this.animate();
+            }
+            
+            animate() {
+                if (!this.isRunning) return;
+                
+                this.time += 0.016;
+                this.ctx.fillStyle = 'rgba(10, 15, 30, 0.1)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                switch(this.currentType) {
+                    case 'breathing': this.renderBreathingGuide(); break;
+                    case 'pulse': this.renderLightPulse(); break;
+                    case 'gradient': this.renderColorGradient(); break;
+                    case 'particles': this.renderFloatingParticles(); break;
+                    case 'waves': this.renderBrainWaves(); break;
+                    case 'labyrinth': this.renderSleepLabyrinth(); break;
+                }
+                
+                this.animationId = requestAnimationFrame(() => this.animate());
+            }
+            
+            renderBreathingGuide() {
+                const centerX = this.canvas.width / 2;
+                const centerY = this.canvas.height / 2;
+                const maxRadius = Math.min(centerX, centerY) * 0.8;
+                const breathCycle = 10;
+                const phase = (this.time % breathCycle) / breathCycle;
+                
+                let radius, alpha;
+                if (phase < 0.4) {
+                    const progress = phase / 0.4;
+                    radius = maxRadius * (0.3 + 0.7 * progress);
+                    alpha = 0.3 + 0.7 * progress;
+                } else {
+                    const progress = (phase - 0.4) / 0.6;
+                    radius = maxRadius * (1.0 - 0.7 * progress);
+                    alpha = 1.0 - 0.7 * progress;
+                }
+                
+                this.ctx.beginPath();
+                this.ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                this.ctx.strokeStyle = `rgba(249, 170, 51, ${alpha})`;
+                this.ctx.lineWidth = 3 * this.intensity;
+                this.ctx.stroke();
+            }
+            
+            renderLightPulse() {
+                const centerX = this.canvas.width / 2;
+                const centerY = this.canvas.height / 2;
+                const pulse = (Math.sin(this.time * Math.PI) + 1) * 0.5;
+                const radius = Math.min(centerX, centerY) * (0.3 + 0.7 * pulse) * this.intensity;
+                
+                const gradient = this.ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
+                gradient.addColorStop(0, `rgba(249, 170, 51, ${0.8 * this.intensity})`);
+                gradient.addColorStop(0.5, `rgba(76, 175, 80, ${0.4 * this.intensity})`);
+                gradient.addColorStop(1, 'rgba(10, 15, 30, 0)');
+                
+                this.ctx.fillStyle = gradient;
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            }
+            
+            renderColorGradient() {
+                const colors = [[59, 89, 152], [76, 175, 80], [249, 170, 51], [156, 39, 176]];
+                const cycleTime = 30;
+                const colorProgress = (this.time % cycleTime) / cycleTime;
+                const colorIndex = Math.floor(colorProgress * colors.length);
+                const nextColorIndex = (colorIndex + 1) % colors.length;
+                const blend = (colorProgress * colors.length) % 1;
+                
+                const [r1, g1, b1] = colors[colorIndex];
+                const [r2, g2, b2] = colors[nextColorIndex];
+                const r = Math.floor(r1 + (r2 - r1) * blend);
+                const g = Math.floor(g1 + (g2 - g1) * blend);
+                const b = Math.floor(b1 + (b2 - b1) * blend);
+                
+                const gradient = this.ctx.createLinearGradient(0, 0, this.canvas.width, this.canvas.height);
+                gradient.addColorStop(0, `rgb(${r}, ${g}, ${b})`);
+                gradient.addColorStop(1, `rgb(${Math.floor(r*0.5)}, ${Math.floor(g*0.5)}, ${Math.floor(b*0.5)})`);
+                
+                this.ctx.fillStyle = gradient;
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            }
+            
+            renderFloatingParticles() {
+                const particleCount = 20 * this.intensity;
+                const centerX = this.canvas.width / 2;
+                const centerY = this.canvas.height / 2;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const angle = (i / particleCount) * Math.PI * 2 + this.time * 0.1;
+                    const distance = 50 + Math.sin(this.time * 0.5 + i) * 30;
+                    const size = 2 + Math.sin(this.time * 2 + i) * 2;
+                    const x = centerX + Math.cos(angle) * distance;
+                    const y = centerY + Math.sin(angle) * distance;
+                    
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, size, 0, Math.PI * 2);
+                    this.ctx.fillStyle = `rgba(249, 170, 51, ${0.3 + Math.sin(this.time + i) * 0.2})`;
+                    this.ctx.fill();
+                }
+            }
+            
+            renderBrainWaves() {
+                const centerY = this.canvas.height / 2;
+                const amplitude = 40 * this.intensity;
+                this.drawWave(0.5, amplitude * 0.3, this.time * 0.3, 'rgba(249, 170, 51, 0.8)');
+                this.drawWave(2.0, amplitude * 0.5, this.time * 1.0, 'rgba(76, 175, 80, 0.6)');
+                this.drawWave(4.0, amplitude * 0.4, this.time * 2.0, 'rgba(33, 150, 243, 0.5)');
+            }
+            
+            drawWave(frequency, amplitude, phase, color) {
+                this.ctx.beginPath();
+                this.ctx.strokeStyle = color;
+                this.ctx.lineWidth = 2;
+                const centerY = this.canvas.height / 2;
+                
+                for (let x = 0; x < this.canvas.width; x++) {
+                    const xNorm = x / this.canvas.width;
+                    const y = centerY + Math.sin(xNorm * Math.PI * 2 * frequency + phase) * amplitude;
+                    if (x === 0) this.ctx.moveTo(x, y);
+                    else this.ctx.lineTo(x, y);
+                }
+                this.ctx.stroke();
+            }
+            
+            renderSleepLabyrinth() {
+                const centerX = this.canvas.width / 2;
+                const centerY = this.canvas.height / 2;
+                const maxRadius = Math.min(centerX, centerY) * 0.8;
+                
+                this.ctx.strokeStyle = `rgba(249, 170, 51, ${0.6 * this.intensity})`;
+                this.ctx.lineWidth = 2;
+                this.ctx.beginPath();
+                
+                const segments = 50;
+                for (let i = 0; i <= segments; i++) {
+                    const progress = i / segments;
+                    const angle = progress * Math.PI * 4 + this.time * 0.1;
+                    const radius = maxRadius * progress;
+                    const x = centerX + Math.cos(angle) * radius;
+                    const y = centerY + Math.sin(angle) * radius;
+                    if (i === 0) this.ctx.moveTo(x, y);
+                    else this.ctx.lineTo(x, y);
+                }
+                this.ctx.stroke();
+            }
+        }
+
+        // Initialize the complete application
+        const sleepSyncApp = new SleepSyncApp();
+    </script>
+</body>
+</html>
