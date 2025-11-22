@@ -1,8 +1,8 @@
 {
   "name": "SleepSync - Sleep Stimulation app",
-  "short_name": "SleepSync",
+  "short_name": "SleepSync", 
   "description": "Evidence-based sleep stimulation using visual, auditory, and breathing techniques",
-  "start_url": "./index.html",
+  "start_url": "./index.html",  // ← CHANGE THIS
   "display": "standalone",
   "background_color": "#232F34",
   "theme_color": "#4A6572",
